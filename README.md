@@ -78,10 +78,9 @@ The FSM evaluates conditions on every clock cycle to transition between states o
 
 ### State Memory & Flip-Flop Overview
 
-The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements (LEs) to store the current state (`fstate`).
+The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements (LEs) to store the current state (`fstate`). This design uses a 5-bit register (`reg [4:0] fstate`), allocating **5 D Flip-Flops** to hold state bits.
+Each state is assigned a unique numerical value using `parameter` definitions:
 
-* **Flip-Flop Count:** The design uses a 5-bit register (`reg [4:0] fstate`), allocating **5 D Flip-Flops** to hold state bits.
-* **State Encoding:** Each state is assigned a unique numerical value using `parameter` definitions:
 * `IDLE` = `5'b00000` (`0`)
 * `SEL` = `5'b00001` (`1`)
 * `CREDIT` = `5'b00010` (`2`)
@@ -115,7 +114,8 @@ end
 
 #### 2. Combinational Logic Block (Next-State & Output Logic)
 
-This block acts as the decision engine. It evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control outputs (`dispense_enable`, `change_enable`).
+This block acts as the decision engine. It evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control outputs (`dispense_enable`, `change_enable`). It reacts instantly to any change in `fstate` or input signals. To ensure latch prevention, it assigns default values at the top of the block in order to explicitly define all output/next-state paths. Due to its Moore nature, control signals (`dispense_enable`, `change_enable`) are driven purely by the active `fstate` branch, guaranteeing clean, glitch-free control outputs to hardware components.
+
 
 ```verilog
 always @(fstate or beverage_selected or enough_credit or dispense_done or change_done) begin
@@ -134,9 +134,7 @@ end
 
 ```
 
-* **Sensitivity List:** Reacts instantly to any change in `fstate` or input signals.
-* **Latch Prevention:** Assigning default values at the top of the block ensures all output/next-state paths are explicitly defined.
-* **Moore Output Generation:** Control signals (`dispense_enable`, `change_enable`) are driven purely by the active `fstate` branch, guaranteeing clean, glitch-free control outputs to hardware components.
+---
 
 ## Architecture & Outputs
 
