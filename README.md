@@ -87,8 +87,7 @@ Each state is assigned a unique numerical value using `parameter` definitions:
 * `BEV` = `5'b011` (`3`)
 * `CHANGE` = `5'b100` (`4`)
 
-
-* **Reset Behavior:** The asynchronous clear (`clr`) pin on each DFF connects directly to the global `reset` line, instantly forcing all flip-flops to zero (`IDLE`) on a reset event without waiting for a clock edge.
+The asynchronous clear (`clr`) pin on each DFF connects directly to the global `reset` line, instantly forcing all flip-flops to zero (`IDLE`) on a reset event without waiting for a clock edge.
 
 ---
 
