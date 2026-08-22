@@ -19,7 +19,124 @@ The core controller is implemented as a synchronous state machine featuring an *
 | **BEV** | `S3` | Dispense beverage | Asserts `dispense_enable = 1`; waits for `dispense_done = 1` $\rightarrow$ `CHANGE` |
 | **CHANGE** | `S4` | Return remaining balance | Asserts `change_enable = 1`; waits for `change_done = 1` $\rightarrow$ `IDLE` |
 
+
 ---
+
+
+### 🔄 State Transitions
+
+The FSM evaluates conditions on every clock cycle to transition between states or maintain its current state:
+
+```
+                    beverage_selected = 1
+             ┌─────────────────────────────────┐
+             │                                 ▼
+          ┌──────┐                         ┌──────┐
+          │ IDLE │ ──────────────────────> │ SEL  │
+          │  S0  │  beverage_selected = 0  │  S1  │
+          └──▲───┘                         └──┬───┘
+             │                                │
+             │                                │ unconditional (1 cycle)
+             │                                ▼
+             │                            ┌────────┐
+             │                            │ CREDIT │ ◄───┐
+             │                            │   S2   │ ────┘
+             │                            └───┬────┘  enough_credit = 0
+             │                                │
+             │                                │ enough_credit = 1
+             │                                ▼
+             │                            ┌────────┐
+             │                            │  BEV   │ ◄───┐
+             │                            │   S3   │ ────┘
+             │                            └───┬────┘  dispense_done = 0
+             │                                │
+             │                                │ dispense_done = 1
+             │                                ▼
+             │                            ┌────────┐
+             │                            │ CHANGE │ ◄───┐
+             └─────────────────────────── │   S4   │ ────┘
+                   change_done = 1        └────────┘  change_done = 0
+
+```
+
+#### Detailed Transition Table
+
+| Source State | Destination State | Condition (Verilog Expression) | Description |
+| --- | --- | --- | --- |
+| **IDLE (`S0`)** | **IDLE (`S0`)** | `beverage_selected == 1'b0` | System stays in standby until a beverage is chosen. |
+| **IDLE (`S0`)** | **SEL (`S1`)** | `beverage_selected == 1'b1` | User selects a drink, advancing the machine to register selection. |
+| **SEL (`S1`)** | **CREDIT (`S2`)** | *Unconditional* (`OTHERS`) | Advances automatically after 1 clock cycle to collect money. |
+| **CREDIT (`S2`)** | **CREDIT (`S2`)** | `enough_credit == 1'b0` | Remains in payment loop while total balance is under drink price. |
+| **CREDIT (`S2`)** | **BEV (`S3`)** | `enough_credit == 1'b1` | Payment met ($Credit \ge Price$); advances to dispense drink. |
+| **BEV (`S3`)** | **BEV (`S3`)** | `dispense_done == 1'b0` | Holds dispense signal high while beverage hardware is active. |
+| **BEV (`S3`)** | **CHANGE (`S4`)** | `dispense_done == 1'b1` | Beverage released; advances to handle remaining change. |
+| **CHANGE (`S4`)** | **CHANGE (`S4`)** | `change_done == 1'b0` | Holds change release enable while return mechanism is active. |
+| **CHANGE (`S4`)** | **IDLE (`S0`)** | `change_done == 1'b1` | Transaction finished; resets state machine back to start. |
+| **ANY STATE** | **IDLE (`S0`)** | `reset == 1'b1` *(Async)* | Immediate return to standby state on asynchronous reset edge. |
+
+---
+
+### 💾 State Memory & Flip-Flop Overview
+
+The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements (LEs) to store the current state (`fstate`).
+
+* **Flip-Flop Count:** The design uses a 5-bit register (`reg [4:0] fstate`), allocating **5 D Flip-Flops** to hold state bits.
+* **State Encoding:** Each state is assigned a unique numerical value using `parameter` definitions:
+* `IDLE` = `5'b00000` (`0`)
+* `SEL` = `5'b00001` (`1`)
+* `CREDIT` = `5'b00010` (`2`)
+* `BEV` = `5'b00011` (`3`)
+* `CHANGE` = `5'b00100` (`4`)
+
+
+* **Reset Behavior:** The asynchronous clear (`clr`) pin on each DFF connects directly to the global `reset` line, instantly forcing all flip-flops to zero (`IDLE`) on a reset event without waiting for a clock edge.
+
+---
+
+### 🏗 How the FSM Code Blocks Work
+
+The Verilog implementation strictly divides the Moore machine into two distinct processing blocks:
+
+#### 1. Sequential Logic Block (State Register)
+
+This block represents the physical hardware memory (D Flip-Flops). It updates the stored state on the rising edge of the system clock or responds immediately to an asynchronous reset. It holds the system's current state (`fstate`) using non-blocking assignments (`<=`) to ensure clean, synchronous state updates every 20 ns (50 MHz).
+
+
+```verilog
+always @(posedge clock or posedge reset) begin
+    if (reset) begin
+        fstate <= IDLE;        // Immediate hardware reset
+    end else begin
+        fstate <= reg_fstate;  // Load next state on clock edge
+    end
+end
+
+```
+
+#### 2. Combinational Logic Block (Next-State & Output Logic)
+
+This block acts as the decision engine. It evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control outputs (`dispense_enable`, `change_enable`).
+
+```verilog
+always @(fstate or beverage_selected or enough_credit or dispense_done or change_done) begin
+    // Default output assignments (prevents latches)
+    dispense_enable <= 1'b0;
+    change_enable   <= 1'b0;
+    
+    case (fstate)
+        IDLE: begin
+            if (beverage_selected) reg_fstate <= SEL;
+            else reg_fstate <= IDLE;
+        end
+        // Additional state evaluations...
+    endcase
+end
+
+```
+
+* **Sensitivity List:** Reacts instantly to any change in `fstate` or input signals.
+* **Latch Prevention:** Assigning default values at the top of the block ensures all output/next-state paths are explicitly defined.
+* **Moore Output Generation:** Control signals (`dispense_enable`, `change_enable`) are driven purely by the active `fstate` branch, guaranteeing clean, glitch-free control outputs to hardware components.
 
 ## 🛠 Architecture & Outputs
 
