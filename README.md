@@ -5,7 +5,7 @@ This repo tracks the design files and implementation of a Moore Finite State Mac
 
 ---
 
-## 📌 Project Overview
+### Project Overview
 
 The core controller is implemented as a synchronous state machine featuring an **asynchronous active-high reset**. Machine control logic is decoupled from datapath calculations: the FSM processes high-level status flags to direct transaction timing, while external datapath registers manage beverage prices, credit balances, and display logic.
 
@@ -23,7 +23,7 @@ The core controller is implemented as a synchronous state machine featuring an *
 ---
 
 
-### 🔄 State Transitions
+### State Transitions
 
 The FSM evaluates conditions on every clock cycle to transition between states or maintain its current state:
 
@@ -76,7 +76,7 @@ The FSM evaluates conditions on every clock cycle to transition between states o
 
 ---
 
-### 💾 State Memory & Flip-Flop Overview
+### State Memory & Flip-Flop Overview
 
 The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements (LEs) to store the current state (`fstate`).
 
@@ -93,7 +93,7 @@ The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements (LE
 
 ---
 
-### 🏗 How the FSM Code Blocks Work
+### How the FSM Code Blocks Work
 
 The Verilog implementation strictly divides the Moore machine into two distinct processing blocks:
 
@@ -138,7 +138,7 @@ end
 * **Latch Prevention:** Assigning default values at the top of the block ensures all output/next-state paths are explicitly defined.
 * **Moore Output Generation:** Control signals (`dispense_enable`, `change_enable`) are driven purely by the active `fstate` branch, guaranteeing clean, glitch-free control outputs to hardware components.
 
-## 🛠 Architecture & Outputs
+## Architecture & Outputs
 
 As this system is designed strictly as a **Moore Machine**, control outputs depend solely on the active state rather than transient input conditions.
 
@@ -173,7 +173,7 @@ As this system is designed strictly as a **Moore Machine**, control outputs depe
 
 ---
 
-## 🔌 Hardware Pin Assignments (DE2 Board)
+### Hardware Pin Assignments (DE2 Board)
 
 Targeted to the **Cyclone II EP2C35F672C6** FPGA layout on the Altera DE2 Board:
 
@@ -190,7 +190,7 @@ Targeted to the **Cyclone II EP2C35F672C6** FPGA layout on the Altera DE2 Board:
 
 ---
 
-## 🚀 Verification & Simulation
+##  Verification & Simulation
 
 1. Open `STATE_MACHINE.qpf` inside **Quartus II 13.0 SP1**.
 2. Run **Analysis & Synthesis** to confirm zero syntax or latch warnings.
