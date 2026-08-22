@@ -194,3 +194,4 @@ Targeted to the **Cyclone II EP2C35F672C6** FPGA layout on the Altera DE2 Board:
 2. Run **Analysis & Synthesis** to confirm zero syntax or latch warnings.
 3. Load `tb_STATE_MACHINE.v` into **ModelSim-Altera** to verify state machine sequence progression ($S0 \rightarrow S1 \rightarrow S2 \rightarrow S3 \rightarrow S4 \rightarrow S0$) and test asynchronous reset behavior at arbitrary clock times.
 4. Assign hardware location pins via the **Pin Planner** and compile design to generate `.sof` bitstream for USB-Blaster programming.
+5. Run simulation on University Program VWF file to verify this program without hardware
