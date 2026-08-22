@@ -38,8 +38,8 @@ module STATE_MACHINE (
     output change_enable;
     reg dispense_enable;
     reg change_enable;
-    reg [4:0] fstate;
-    reg [4:0] reg_fstate;
+    reg [2:0] fstate;
+    reg [2:0] reg_fstate;
     parameter IDLE=0,SEL=1,CREDIT=2,BEV=3,CHANGE=4;
 
     always @(posedge clock or posedge reset)
