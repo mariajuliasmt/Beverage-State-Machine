@@ -78,14 +78,14 @@ The FSM evaluates conditions on every clock cycle to transition between states o
 
 ### State Memory & Flip-Flop Overview
 
-The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements (LEs) to store the current state (`fstate`). This design uses a 5-bit register (`reg [4:0] fstate`), allocating **5 D Flip-Flops** to hold state bits.
+The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements (LEs) to store the current state (`fstate`). This design uses a 3-bit register (`reg [2:0] fstate`), allocating **3 D Flip-Flops** to hold state bits.
 Each state is assigned a unique numerical value using `parameter` definitions:
 
-* `IDLE` = `5'b00000` (`0`)
-* `SEL` = `5'b00001` (`1`)
-* `CREDIT` = `5'b00010` (`2`)
-* `BEV` = `5'b00011` (`3`)
-* `CHANGE` = `5'b00100` (`4`)
+* `IDLE` = `5'b000` (`0`)
+* `SEL` = `5'b001` (`1`)
+* `CREDIT` = `5'b010` (`2`)
+* `BEV` = `5'b011` (`3`)
+* `CHANGE` = `5'b100` (`4`)
 
 
 * **Reset Behavior:** The asynchronous clear (`clr`) pin on each DFF connects directly to the global `reset` line, instantly forcing all flip-flops to zero (`IDLE`) on a reset event without waiting for a clock edge.
