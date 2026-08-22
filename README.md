@@ -23,7 +23,7 @@ The core controller is implemented as a synchronous state machine featuring an *
 
 ## 🛠 Architecture & Outputs
 
-Because this system is designed strictly as a **Moore Machine**, control outputs depend solely on the active state rather than transient input conditions.
+As this system is designed strictly as a **Moore Machine**, control outputs depend solely on the active state rather than transient input conditions.
 
 ```
                   +-------------------+
