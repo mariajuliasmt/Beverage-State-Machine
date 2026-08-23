@@ -58,7 +58,7 @@ The FSM evaluates conditions on every clock cycle to transition between states o
                    change_done = 1        └────────┘  change_done = 0
 
 ```
-Given this design uses D Flip-Flops, its Excitation Table is based off of D FF Excitation Table where Q_2^+ Q_1^+ Q_0^+  = D_2 D_1 D_0. I enconded `fstate` as Q2Q1Q0 and I0, I1, I2 and I3 as beverage_selected, enough_credit, dispense_done and change_done, respectivelly.
+Given this design uses D Flip-Flops, its Excitation Table is based off of D FF Excitation Table where $Q_2^+ Q_1^+ Q_0^+$  = $D_2 D_1 D_0$. I enconded `fstate` as $Q_2 Q_1 Q_0$ and $I_0$, $I_1$, $I_2$ and $I_3$ as `beverage_selected`, `enough_credit`, `dispense_done` and `change_done`, respectivelly.
 
 #### D Flip Flop Excitation Table 
 
