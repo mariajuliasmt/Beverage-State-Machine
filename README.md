@@ -58,6 +58,31 @@ The FSM evaluates conditions on every clock cycle to transition between states o
                    change_done = 1        └────────┘  change_done = 0
 
 ```
+Given this design uses D Flip-Flops, its Excitation Table is based off of D FF Excitation Table where Q_2^+ Q_1^+ Q_0^+  = D_2 D_1 D_0. I enconded `fstate` as Q2Q1Q0 and I0, I1, I2 and I3 as beverage_selected, enough_credit, dispense_done and change_done, respectivelly.
+
+#### D Flip Flop Excitation Table 
+
+| Current State $Q(t)$ | Next State $Q(t+1)$ | Required Input $D$ |
+| :---: | :---: | :---: |
+| `0` | `0` | `0` |
+| `0` | `1` | `1` |
+| `1` | `0` | `0` |
+| `1` | `1` | `1` |
+
+#### Beverage FSM Excitation Table
+| Current State ($Q_2 Q_1 Q_0$) | Condition / Flag | Next State ($Q_2^+ Q_1^+ Q_0^+$) | Required D Flip-Flop Inputs ($D_2 D_1 D_0$) |
+| :---: | :--- | :---: | :---: |
+| **S0** (`000`) | `beverage_selected == 0` | `000` | `000` |
+| **S0** (`000`) | `beverage_selected == 1` | `001` | `001` |
+| **S1** (`001`) | *Unconditional* | `010` | `010` |
+| **S2** (`010`) | `enough_credit == 0` | `010` | `010` |
+| **S2** (`010`) | `enough_credit == 1` | `011` | `011` |
+| **S3** (`011`) | `dispense_done == 0` | `011` | `011` |
+| **S3** (`011`) | `dispense_done == 1` | `100` | `100` |
+| **S4** (`100`) | `change_done == 0` | `100` | `100` |
+| **S4** (`100`) | `change_done == 1` | `000` | `000` |
+
+---
 
 #### Detailed Transition Table
 
