@@ -7,7 +7,7 @@ This repo tracks the design files and implementation of a Moore Finite State Mac
 
 ### Project Overview
 
-The core controller is implemented as a synchronous state machine featuring an **asynchronous active-high reset**. Machine control logic is decoupled from datapath calculations: the FSM processes high-level status flags to direct transaction timing, while external datapath registers manage beverage prices, credit balances, and display logic.
+The core controller is implemented as a synchronous state machine featuring an asynchronous active-high reset. Machine control logic is decoupled from datapath calculations: the FSM processes high-level status flags to direct transaction timing, while external datapath registers manage beverage prices, credit balances, and display logic.
 
 ### State Definitions & Control Flow
 
@@ -25,7 +25,7 @@ The core controller is implemented as a synchronous state machine featuring an *
 
 ### State Transitions
 
-The FSM evaluates conditions on every clock cycle to transition between states or maintain its current state:
+The FSM evaluates conditions on every clock cycle to either transition between states or maintain its current state:
 
 ```
                     beverage_selected = 1
@@ -58,7 +58,7 @@ The FSM evaluates conditions on every clock cycle to transition between states o
                    change_done = 1        └────────┘  change_done = 0
 
 ```
-Given this design uses D Flip-Flops, its Excitation Table is based off of D FF Excitation Table where $Q_2^+ Q_1^+ Q_0^+$  = $D_2 D_1 D_0$. I enconded `fstate` as $Q_2 Q_1 Q_0$ and $I_0$, $I_1$, $I_2$ and $I_3$ as `beverage_selected`, `enough_credit`, `dispense_done` and `change_done`, respectivelly.
+Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Excitation Table where $Q_2^+ Q_1^+ Q_0^+$  = $D_2 D_1 D_0$. I enconded `fstate` as $Q_2 Q_1 Q_0$ and $I_0$, $I_1$, $I_2$ and $I_3$ as `beverage_selected`, `enough_credit`, `dispense_done` and `change_done`, respectivelly.
 
 #### D Flip Flop Excitation Table 
 
@@ -103,7 +103,7 @@ Given this design uses D Flip-Flops, its Excitation Table is based off of D FF E
 
 ### State Memory & Flip-Flop Overview
 
-The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements (LEs) to store the current state (`fstate`). This design uses a 3-bit register (`reg [2:0] fstate`), allocating **3 D Flip-Flops** to hold state bits.
+The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements to store the current state (`fstate`). This design uses a 3-bit register (`reg [2:0] fstate`), allocating **3 D Flip-Flops** to hold state bits.
 Each state is assigned a unique numerical value using `parameter` definitions:
 
 * `IDLE` = `5'b000` (`0`)
@@ -122,7 +122,7 @@ The Verilog implementation strictly divides the Moore machine into two distinct 
 
 #### 1. Sequential Logic Block (State Register)
 
-This block represents the physical hardware memory (D Flip-Flops), given it updates the stored state on the rising edge of the system clock or responds immediately to an asynchronous reset. It holds the system's current state (`fstate`) using non-blocking assignments (`<=`) to ensure clean, synchronous state updates every 20 ns (50 MHz).
+This block represents the physical hardware memory, DFFs, given it updates the stored state on the rising edge of the system clock or responds immediately to an asynchronous reset. It holds the system's current state (`fstate`) using non-blocking assignments (`<=`) to ensure clean, synchronous state updates every 20 ns (50 MHz).
 
 
 ```verilog
