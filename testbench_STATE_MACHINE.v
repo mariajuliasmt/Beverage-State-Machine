@@ -4,7 +4,7 @@
 
 module testbench_STATE_MACHINE;
 
-    reg clock;
+    reg clock = 0;
     reg reset;
     reg beverage_selected;
     reg enough_credit;
@@ -32,7 +32,6 @@ module testbench_STATE_MACHINE;
     initial begin
 
         // Initial conditions for testing
-        clock = 0;
         reset = 0;
         beverage_selected = 0;
         enough_credit = 0;
