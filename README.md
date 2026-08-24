@@ -116,7 +116,7 @@ The asynchronous clear (`clr`) pin on each DFF connects directly to the global `
 
 ---
 
-### How each FSM Code Blocks Work
+### How each FSM Code Block Work
 
 The Verilog implementation divides the Moore machine into two distinct processing blocks:
 
