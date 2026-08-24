@@ -1,5 +1,5 @@
 # Beverage-State-Machine
-Final assignment on Digital Logic Design 
+Based off of assignment on Digital Logic Design 
 
 This repo tracks the design files and implementation of a Moore Finite State Machine controlling an automated beverage vending machine. This design was developed using Verilog HDL on Quartus II, targeting the **Altera/Intel Cyclone II EP2C35F672C6 FPGA** on the DE2 Development Board.
 
@@ -116,9 +116,9 @@ The asynchronous clear (`clr`) pin on each DFF connects directly to the global `
 
 ---
 
-### How the FSM Code Blocks Work
+### How each FSM Code Blocks Work
 
-The Verilog implementation strictly divides the Moore machine into two distinct processing blocks:
+The Verilog implementation divides the Moore machine into two distinct processing blocks:
 
 #### 1. Sequential Logic Block (State Register)
 
