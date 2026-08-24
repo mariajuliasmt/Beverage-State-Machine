@@ -106,11 +106,11 @@ Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Ex
 The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements to store the current state (`fstate`). This design uses a 3-bit register (`reg [2:0] fstate`), allocating **3 D Flip-Flops** to hold state bits.
 Each state is assigned a unique numerical value using `parameter` definitions:
 
-* `IDLE` = `5'b000` (`0`)
-* `SEL` = `5'b001` (`1`)
-* `CREDIT` = `5'b010` (`2`)
-* `BEV` = `5'b011` (`3`)
-* `CHANGE` = `5'b100` (`4`)
+* `IDLE` = `3'b000` (`0`)
+* `SEL` = `3'b001` (`1`)
+* `CREDIT` = `3'b010` (`2`)
+* `BEV` = `3'b011` (`3`)
+* `CHANGE` = `3'b100` (`4`)
 
 The asynchronous clear (`clr`) pin on each DFF connects directly to the global `reset` line, instantly forcing all flip-flops to zero (`IDLE`) on a reset event without waiting for a clock edge.
 
@@ -138,7 +138,7 @@ end
 
 #### 2. Combinational Logic Block (Next-State & Output Logic)
 
-This block acts as the decision engine as it evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control outputs (`dispense_enable`, `change_enable`). It reacts instantly to any change in `fstate` or input signals. To ensure latch prevention, it assigns default values at the top of the block in order to explicitly define all output/next-state paths. Due to its Moore nature, control signals (`dispense_enable`, `change_enable`) are driven only by the active `fstate` branch, guaranteeing clean and glitch-free control outputs to hardware components.
+This block acts as the decision engine as it evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control outputs (`dispense_enable`, `change_enable`). It reacts instantly to any change in `fstate` or input signals. To ensure latch prevention, it assigns default values at the top of the block in order to explicitly define all output/next-state paths. Due to its Moore nature, control signals (`dispense_enable`, `change_enable`) are driven only by the active `fstate` branch, guaranteeing cleaner control outputs to hardware components.
 
 
 ```verilog
