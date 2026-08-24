@@ -17,6 +17,8 @@
 
 // synthesis message_off 10175
 
+// CODE GENERATED THROUGH STATE MACHINE FILE IN QUARTUS II
+
 `timescale 1ns/1ns
 
 module STATE_MACHINE (
