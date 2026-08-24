@@ -138,7 +138,7 @@ end
 
 #### 2. Combinational Logic Block (Next-State & Output Logic)
 
-This block acts as the decision engine as it evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control outputs (`dispense_enable`, `change_enable`). It reacts instantly to any change in `fstate` or input signals. To ensure latch prevention, it assigns default values at the top of the block in order to explicitly define all output/next-state paths. Due to its Moore nature, control signals (`dispense_enable`, `change_enable`) are driven purely by the active `fstate` branch, guaranteeing clean, glitch-free control outputs to hardware components.
+This block acts as the decision engine as it evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control outputs (`dispense_enable`, `change_enable`). It reacts instantly to any change in `fstate` or input signals. To ensure latch prevention, it assigns default values at the top of the block in order to explicitly define all output/next-state paths. Due to its Moore nature, control signals (`dispense_enable`, `change_enable`) are driven only by the active `fstate` branch, guaranteeing clean and glitch-free control outputs to hardware components.
 
 
 ```verilog
