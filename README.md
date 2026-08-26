@@ -25,7 +25,7 @@ The core controller is implemented as a synchronous state machine featuring an a
 
 ### State Transitions
 
-The FSM evaluates conditions on every clock cycle to either transition between states or maintain its current state:
+This State Machine evaluates conditions on every clock cycle to either transition between states or maintain its current state:
 
 ```
                     beverage_selected = 1
@@ -103,8 +103,8 @@ Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Ex
 
 ### State Memory & Flip-Flop Overview
 
-The FSM utilizes physical D Flip-Flops (DFFs) inside the FPGA logic elements to store the current state (`fstate`). This design uses a 3-bit register (`reg [2:0] fstate`), allocating **3 D Flip-Flops** to hold state bits.
-Each state is assigned a unique numerical value using `parameter` definitions:
+This FSM utilizes physical D Flip-Flops (DFFs) inside FPGA logic elements to store the current state (`fstate`). This design uses a 3-bit register (`reg [2:0] fstate`), allocating **3 D Flip-Flops** to hold state bits.
+Each state is assigned a numerical value using `parameter` definitions:
 
 * `IDLE` = `3'b000` (`0`)
 * `SEL` = `3'b001` (`1`)
@@ -214,8 +214,8 @@ Targeted to the **Cyclone II EP2C35F672C6** FPGA layout on the Altera DE2 Board:
 
 ##  Verification & Simulation
 
-1. Open `STATE_MACHINE.qpf` inside **Quartus II 13.0 SP1**.
-2. Run **Analysis & Synthesis** to confirm zero syntax or latch warnings.
+1. Open `STATE_MACHINE.v` inside **Quartus II 13.0 SP1**.
+2. Run **Analysis & Synthesis** on the programs to confirm no syntax or latch warnings.
 3. Load `testbench_STATE_MACHINE.v` into **ModelSim-Altera** to verify state machine sequence progression ($S0 \rightarrow S1 \rightarrow S2 \rightarrow S3 \rightarrow S4 \rightarrow S0$) and test asynchronous reset behavior at arbitrary clock times.
 4. Assign hardware location pins via the **Pin Planner** and compile design to generate `.sof` bitstream for USB-Blaster programming.
-5. Run simulation on University Program VWF file to verify this program without hardware
+5. Run `STATE_MACHINE.v` simulation on University Program VWF file to verify this program without DE2 board.
