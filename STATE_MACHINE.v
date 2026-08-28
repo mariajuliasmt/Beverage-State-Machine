@@ -1,7 +1,6 @@
 // Code in Verilog HDL without .smf auto-generation
 
 module STATE_MACHINE (
-    input  wire clock,
 	input wire clock,
 	input wire reset,
 	input wire beverage_selected,
