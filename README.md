@@ -104,13 +104,13 @@ Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Ex
 ### State Memory & Flip-Flop Overview
 
 This FSM utilizes physical D Flip-Flops (DFFs) inside FPGA logic elements to store the current state (`fstate`). This design uses a 3-bit register (`reg [2:0] fstate`), allocating **3 D Flip-Flops** to hold state bits.
-Each state is assigned a numerical value using `parameter` definitions:
+Each state is assigned a numerical value using `localparam` definitions:
 
-* `IDLE` = `3'b000` (`0`)
-* `SEL` = `3'b001` (`1`)
-* `CREDIT` = `3'b010` (`2`)
-* `BEV` = `3'b011` (`3`)
-* `CHANGE` = `3'b100` (`4`)
+* `localparam``IDLE` = `3'b000` (`0`)
+* `localparam``SEL` = `3'b001` (`1`)
+* `localparam``CREDIT` = `3'b010` (`2`)
+* `localparam``BEV` = `3'b011` (`3`)
+* `localparam``CHANGE` = `3'b100` (`4`)
 
 The asynchronous clear (`clr`) pin on each DFF connects directly to the global `reset` line, instantly forcing all flip-flops to zero (`IDLE`) on a reset event without waiting for a clock edge.
 
@@ -122,7 +122,7 @@ The Verilog implementation divides the Moore machine into two distinct processin
 
 #### 1. Sequential Logic Block (State Register)
 
-This block represents the physical hardware memory, DFFs, given it updates the stored state on the rising edge of the system clock or responds immediately to an asynchronous reset. It holds the system's current state (`fstate`) using non-blocking assignments (`<=`) to ensure clean, synchronous state updates every 20 ns (50 MHz).
+This block represents the physical hardware memory, DFFs, given it updates the stored state on the rising edge of the system clock or responds immediately to an asynchronous reset. It holds the system's current state (`fstate`) using non-blocking assignments (`<=`) to ensure synchronous state updates every 20 ns (50 MHz).
 
 
 ```verilog
@@ -138,7 +138,7 @@ end
 
 #### 2. Combinational Logic Block (Next-State & Output Logic)
 
-This block acts as the decision engine as it evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control outputs (`dispense_enable`, `change_enable`). It reacts instantly to any change in `fstate` or input signals. To ensure latch prevention, it assigns default values at the top of the block in order to explicitly define all output/next-state paths. Due to its Moore nature, control signals (`dispense_enable`, `change_enable`) are driven only by the active `fstate` branch, guaranteeing cleaner control outputs to hardware components.
+This block acts as the decision engine as it evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control Moore outputs (`dispense_enable`, `change_enable`). On `STATE_MACHINE.smf`, non-blocking assignments are used inside `always`, which queues updates and may cause unwanted latch behavior and delays. The handwritten module `STATE_MACHINE.v`, on the other hand, uses blocking assignments in standard HDL manner to ensure variable values are updated immediately, which is the main focus of a combinational logic block, given it doesn't have memory elements. Using blocking assignments inside `always` procedural block, this combinational logic block reacts instantly to any change in `fstate` or input signals. To ensure latch prevention, it assigns default values at the top of the block in order to explicitly define all output/next-state paths. Due to its Moore nature, control signals (`dispense_enable`, `change_enable`) are driven only by the active `fstate` branch, guaranteeing cleaner control outputs to hardware components.
 
 
 ```verilog
@@ -149,8 +149,8 @@ always @(fstate or beverage_selected or enough_credit or dispense_done or change
     
     case (fstate)
         IDLE: begin
-            if (beverage_selected) reg_fstate <= SEL;
-            else reg_fstate <= IDLE;
+            if (beverage_selected) reg_fstate = SEL;
+            else reg_fstate = IDLE;
         end
         // Additional state evaluations...
     endcase
