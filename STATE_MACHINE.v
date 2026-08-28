@@ -20,53 +20,53 @@ module STATE_MACHINE (
 	localparam CHANGE = 3'b100;
     // 3'b101, 3'b110 and 3'b111 == DON'T CARE
 
-	reg [2:0] state;
-	reg [2:0] next_state;
+	reg [2:0] fstate;
+	reg [2:0] reg_fstate;
 
     // State register
     // Asynchronous active-high reset
 	
 	always @(posedge clock or posedge reset) begin
 		if (reset)
-			state <= IDLE;
+			fstate <= IDLE;
 		else
-			state <= next_state;
+			fstate <= reg_fstate;
 	end
 	
     // Next-state logic 
 
 	always @(*) begin
-		case (state)
+		case (fstate)
 			IDLE: begin
 				if (beverage_selected)
-					next_state = SEL;
+					reg_fstate = SEL;
 				else
-					next_state = IDLE;
+					reg_fstate = IDLE;
 			end
 			
 			SEL: begin
-				next_state = CREDIT;
+				reg_fstate = CREDIT;
 			end	
 
 			CREDIT: begin
 				if (enough_credit)
-					next_state = BEV;
+					reg_fstate = BEV;
 				else
-					next_state = CREDIT;
+					reg_fstate = CREDIT;
 			end
 
 			BEV: begin
 				if (dispense_done)
-					next_state = CHANGE;
+					reg_fstate = CHANGE;
 				else
-					next_state = BEV;
+					reg_fstate = BEV;
 			end
 
 			CHANGE: begin
 				if (change_done)
-					next_state = IDLE;
+					reg_fstate = IDLE;
 				else
-					next_state = CHANGE;
+					reg_fstate = CHANGE;
 			end
 		endcase
 	end
