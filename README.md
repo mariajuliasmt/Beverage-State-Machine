@@ -58,7 +58,7 @@ This State Machine evaluates conditions on every clock cycle to either transitio
                    change_done = 1        └────────┘  change_done = 0
 
 ```
-Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Excitation Table where $Q_2^+ Q_1^+ Q_0^+$  = $D_2 D_1 D_0$. I enconded `fstate` as $Q_2 Q_1 Q_0$ and $I_0$, $I_1$, $I_2$ and $I_3$ as `beverage_selected`, `enough_credit`, `dispense_done` and `change_done`, respectivelly.
+Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Excitation Table where $Q_2^+ Q_1^+ Q_0^+$  = $D_2 D_1 D_0$. For this project, I chose encode `fstate` as $Q_2 Q_1 Q_0$ and $I_0$, $I_1$, $I_2$ and $I_3$ as `beverage_selected`, `enough_credit`, `dispense_done` and `change_done`, respectively.
 
 #### D Flip Flop Excitation Table 
 
@@ -106,11 +106,11 @@ Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Ex
 This FSM utilizes physical D Flip-Flops (DFFs) inside FPGA logic elements to store the current state (`fstate`). This design uses a 3-bit register (`reg [2:0] fstate`), allocating **3 D Flip-Flops** to hold state bits.
 Each state is assigned a numerical value using `localparam` definitions:
 
-* `localparam``IDLE` = `3'b000` (`0`)
-* `localparam``SEL` = `3'b001` (`1`)
-* `localparam``CREDIT` = `3'b010` (`2`)
-* `localparam``BEV` = `3'b011` (`3`)
-* `localparam``CHANGE` = `3'b100` (`4`)
+* `localparam` `IDLE`   = `3'b000` (`0`)
+* `localparam` `SEL`    = `3'b001` (`1`)
+* `localparam` `CREDIT` = `3'b010` (`2`)
+* `localparam` `BEV`    = `3'b011` (`3`)
+* `localparam` `CHANGE` = `3'b100` (`4`)
 
 The asynchronous clear (`clr`) pin on each DFF connects directly to the global `reset` line, instantly forcing all flip-flops to zero (`IDLE`) on a reset event without waiting for a clock edge.
 
