@@ -80,7 +80,7 @@ module STATE_MACHINE (
 		dispense_enable = 1'b0;
 		change_enable   = 1'b0;
         
-		case (state)
+		case (fstate)
 			BEV: begin
 				dispense_enable = 1'b1;
 			end
