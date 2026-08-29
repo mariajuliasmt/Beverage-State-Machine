@@ -125,6 +125,7 @@ The Verilog implementation divides the Moore machine into two distinct processin
 This block represents the physical hardware memory, DFFs, given it updates the stored state on the rising edge of the system clock or responds immediately to an asynchronous reset. It holds the system's current state (`fstate`) using non-blocking assignments (`<=`) to ensure synchronous state updates every 20 ns (50 MHz).
 
 
+
 ```verilog
 always @(posedge clock or posedge reset) begin
     if (reset) begin
@@ -134,30 +135,56 @@ always @(posedge clock or posedge reset) begin
     end
 end
 
+ 
 ```
 
 #### 2. Combinational Logic Block (Next-State & Output Logic)
 
-This block acts as the decision engine as it evaluates the current state (`fstate`) alongside input flags to calculate both the next state (`reg_fstate`) and control Moore outputs (`dispense_enable`, `change_enable`). On `STATE_MACHINE.smf`, non-blocking assignments are used inside `always`, which queues updates and may cause unwanted latch behavior and delays. The handwritten module `STATE_MACHINE.v`, on the other hand, uses blocking assignments in standard HDL manner to ensure variable values are updated immediately, which is the main focus of a combinational logic block, given it doesn't have memory elements. Using blocking assignments inside `always` procedural block, this combinational logic block reacts instantly to any change in `fstate` or input signals. To ensure latch prevention, it assigns default values at the top of the block in order to explicitly define all output/next-state paths. Due to its Moore nature, control signals (`dispense_enable`, `change_enable`) are driven only by the active `fstate` branch, guaranteeing cleaner control outputs to hardware components.
+This is a block that acts as a decision engine as it evaluates the current state (`fstate`) alongside input flags to both calculate the next state (`reg_fstate`) and control Moore outputs (`dispense_enable`, `change_enable`). On `STATE_MACHINE.smf`, non-blocking assignments are used inside `always`, which queues updates and may cause unwanted latch behavior and delays. The handwritten module `STATE_MACHINE.v`, on the other hand, uses blocking assignments in standard HDL manner to ensure variable values are immediately updated, given it's the main focus of a combinational logic block due to its memoryless nature. Using blocking assignments inside `always`, this block reacts instantly to any change in `fstate` or input signals. 
 
 
 ```verilog
-always @(fstate or beverage_selected or enough_credit or dispense_done or change_done) begin
-    // Default output assignments (prevents latches)
-    dispense_enable <= 1'b0;
-    change_enable   <= 1'b0;
-    
-    case (fstate)
-        IDLE: begin
-            if (beverage_selected) reg_fstate = SEL;
-            else reg_fstate = IDLE;
-        end
-        // Additional state evaluations...
-    endcase
-end
+
+always @(*) begin
+		case (fstate)
+			IDLE: begin
+				if (beverage_selected)
+					reg_fstate = SEL;
+				else
+					reg_fstate = IDLE;
+			end
+	    // Additional state evaluations...
+		endcase
+	end
+ 
 
 ```
 
+To avoid any latch, it assigns default values in order to explicitly define all output/next-state paths. Due to its Moore nature, control signals (`dispense_enable`, `change_enable`) are driven only by the active `fstate` branch, guaranteeing cleaner control outputs to hardware components.
+
+
+```verilog
+always @(*) begin
+
+		// Default outputs
+		dispense_enable = 1'b0;
+		change_enable   = 1'b0;
+        
+		case (state)
+			BEV: begin
+				dispense_enable = 1'b1;
+			end
+
+			CHANGE: begin
+				change_enable = 1'b1;
+			end
+
+			default: begin
+				// Outputs remain disabled
+			end
+		endcase
+	end
+```
 ---
 
 ## Architecture & Outputs
