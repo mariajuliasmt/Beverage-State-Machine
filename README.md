@@ -58,7 +58,7 @@ This State Machine evaluates conditions on every clock cycle to either transitio
                    change_done = 1        └────────┘  change_done = 0
 
 ```
-Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Excitation Table where $Q_2^+ Q_1^+ Q_0^+$  = $D_2 D_1 D_0$. For this project, I chose encode `fstate` as $Q_2 Q_1 Q_0$ and $I_0$, $I_1$, $I_2$ and $I_3$ as `beverage_selected`, `enough_credit`, `dispense_done` and `change_done`, respectively.
+Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Excitation Table where $Q_2^+$ $Q_1^+$ $Q_0^+$  = $D_2$ $D_1$ $D_0$. For this project, I chose encode `fstate` as $Q_2$ $Q_1$ $Q_0$ and $I_0$, $I_1$, $I_2$ and $I_3$ as `beverage_selected`, `enough_credit`, `dispense_done` and `change_done`, respectively.
 
 #### D Flip Flop Excitation Table 
 
