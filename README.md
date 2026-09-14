@@ -70,7 +70,7 @@ Given this design uses D Flip-Flops, its Excitation Table is based off of DFF Ex
 | `1` | `1` | `1` |
 
 #### Beverage FSM Excitation Table
-| Current State ($Q_2 Q_1 Q_0$) | Condition / Flag | Next State ($Q_2^+ Q_1^+ Q_0^+$) | Required D Flip-Flop Inputs ($D_2 D_1 D_0$) |
+| Current State ($Q_2$ $Q_1$ $Q_0$) | Condition / Flag | Next State ($Q_2^+$ $Q_1^+$ $Q_0^+$) | Required D Flip-Flop Inputs ($D_2$ $D_1$ $D_0$) |
 | :---: | :--- | :---: | :---: |
 | **S0** (`000`) | `beverage_selected == 0` | `000` | `000` |
 | **S0** (`000`) | `beverage_selected == 1` | `001` | `001` |
